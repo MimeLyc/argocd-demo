@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: my-application-set
+spec:
+  generators:
+    - list:
+        items:
+          - cluster: kind-kind
+            url: https://kubernetes.default.svc
+            name: prod
+            overlay: prod
+          # - cluster: in-cluster
+          #   url: https://kubernetes.default.svc
+          #   name: staging
+          #   overlay: staging
+  template:
+    metadata:
+      name: "my-deployment-{{name}}"
+    spec:
+      project: default
+      source:
+        repoURL: "https://github.com/MimeLyc/argocd-demo.git"
+        targetRevision: HEAD
+        kustomize:
+          namePrefix: "{{name}}-"
+          kustomizationPath: "overlays/{{overlay}}"
+      destination:
+        server: "{{url}}"
+        namespace: "{{name}}"

@@ -1,0 +1,6 @@
+bases:
+  - ../../base
+
+metadata:
+  annotations:
+    environment: "production"
